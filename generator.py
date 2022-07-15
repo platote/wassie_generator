@@ -11,7 +11,6 @@ bl_info = {
     "category" : "3D View"
 }
 
-from pydoc import describe
 import bpy
 import os 
 from bpy.types import Operator
@@ -102,6 +101,29 @@ class TLA_OT_operator(Operator):
 
         for mesh in used_mesh: 
             mesh.data.use_auto_smooth = 0
+
+        def applyingTexture_gltf_colors(path, obj):
+            mat = bpy.data.materials.new(name="Base Material")
+            mat.use_nodes = True
+            bsdf = mat.node_tree.nodes["Principled BSDF"]
+            texImage = mat.node_tree.nodes.new('ShaderNodeTexImage')
+            texImage.image = bpy.data.images.load(path)
+            color_ramp = mat.node_tree.nodes.new('ShaderNodeValToRGB')
+            color_ramp.color_ramp.elements[0].color = context.scene.mytool_color1
+            color_ramp.color_ramp.elements[1].color = context.scene.mytool_color2
+            mat.node_tree.links.new(color_ramp.inputs[0], texImage.outputs['Color'])
+            mat.node_tree.links.new(bsdf.inputs['Base Color'], color_ramp.outputs['Color'])
+            obj.data.materials[0] = mat
+
+        def applyingTexture_gltf(path, obj):
+            mat = bpy.data.materials.new(name="Base Material")
+            mat.use_nodes = True
+            bsdf = mat.node_tree.nodes["Principled BSDF"]
+            texImage = mat.node_tree.nodes.new('ShaderNodeTexImage')
+            texImage.image = bpy.data.images.load(path)
+            mat.node_tree.links.new(bsdf.inputs['Base Color'], texImage.outputs['Color'])
+            obj.data.materials[0] = mat
+
         
         def applyingTexture_colors(path, obj, outline):
             mat = bpy.data.materials.new(name="Base Material")
@@ -167,7 +189,7 @@ class TLA_OT_operator(Operator):
         eyes_texture = os.path.join(os.path.dirname(bpy.data.filepath), f"Eyes/Eyes_{eyes_type}_TXTR.tga")
         feet_texture = os.path.join(os.path.dirname(bpy.data.filepath), "Feet/Feet_Wassie_TXTR.tga")
       
-        applyingTexture_colors(body_texture, body, False)
+        applyingTexture_gltf_colors(body_texture, body)
         applyingTexture(beak_texture, beak, True)
         applyingTexture(eyes_texture, eyes, False)
         applyingTexture(feet_texture, feet, True)
