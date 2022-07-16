@@ -189,10 +189,10 @@ class TLA_OT_operator(Operator):
         eyes_texture = os.path.join(os.path.dirname(bpy.data.filepath), f"Eyes/Eyes_{eyes_type}_TXTR.tga")
         feet_texture = os.path.join(os.path.dirname(bpy.data.filepath), "Feet/Feet_Wassie_TXTR.tga")
       
-        applyingTexture_colors(body_texture, body, False)
-        applyingTexture(beak_texture, beak, True)
-        applyingTexture(eyes_texture, eyes, False)
-        applyingTexture(feet_texture, feet, True)
+        applyingTexture_gltf_colors(body_texture, body)
+        applyingTexture_gltf(beak_texture, beak)
+        applyingTexture_gltf(eyes_texture, eyes)
+        applyingTexture_gltf(feet_texture, feet)
 
         def vertices_to_bone(obj, bone):
             group = obj.vertex_groups.new(name = bone)
