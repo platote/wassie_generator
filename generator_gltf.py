@@ -1,6 +1,6 @@
 bl_info = {
-    "name" : ".VRM NAKED WASSIE",
-    "description" : "Generate a .VRM NAKED WASSIE",
+    "name" : "GLTF NAKED WASSIE",
+    "description" : "Generate a GLTF NAKED WASSIE",
     "author" : "Platote",
     "version" : (0, 0, 1),
     "blender" : (2, 80, 0),
@@ -28,7 +28,7 @@ class TLA_PT_sidebar(Panel):
 
     def draw(self, context):
         col = self.layout.column(align=True)
-        prop = col.operator(TLA_OT_operator.bl_idname, text="Generate Wassie")
+        prop = col.operator(TLA_OT_operator.bl_idname, text="Generate GLTF Wassie")
         row = self.layout.row()
         """
         row.prop(context.scene, "mytool_color1")
@@ -103,6 +103,7 @@ class TLA_OT_operator(Operator):
 
         for mesh in used_mesh: 
             mesh.data.use_auto_smooth = 0
+
 
         def applyingTexture_gltf_colors(path, obj):
             mat = bpy.data.materials.new(name="Base Material")
@@ -191,10 +192,10 @@ class TLA_OT_operator(Operator):
         eyes_texture = os.path.join(os.path.dirname(bpy.data.filepath), f"Eyes/Eyes_{eyes_type}_TXTR.tga")
         feet_texture = os.path.join(os.path.dirname(bpy.data.filepath), "Feet/Feet_Wassie_TXTR.tga")
       
-        applyingTexture(body_texture, body, False)
-        applyingTexture(beak_texture, beak, True)
-        applyingTexture(eyes_texture, eyes, False)
-        applyingTexture(feet_texture, feet, True)
+        applyingTexture_gltf(body_texture, body)
+        applyingTexture_gltf(beak_texture, beak)
+        applyingTexture_gltf(eyes_texture, eyes)
+        applyingTexture_gltf(feet_texture, feet)
 
         def vertices_to_bone(obj, bone):
             group = obj.vertex_groups.new(name = bone)
@@ -247,6 +248,8 @@ class TLA_OT_operator(Operator):
                 blend_shape_groups.index = dict[i][1]
                 blend_shape_groups.weight = 1
 
+        # SCALING
+
         def scale(ob):
             bpy.ops.object.select_all(action='DESELECT')
             ob.select_set(True)
@@ -254,7 +257,6 @@ class TLA_OT_operator(Operator):
             bpy.ops.object.select_all(action='DESELECT')
    
         scale(armature)
-
 
         self.report({'INFO'},
             f"execute()")
@@ -277,7 +279,6 @@ def register():
         name='Float',
         default=0.0 
     )
-
     """
     bpy.types.Scene.mytool_color1 = bpy.props.FloatVectorProperty(
                  name = "Belly Color",
